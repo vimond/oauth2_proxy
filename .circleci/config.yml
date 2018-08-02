@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  upload_and_deploy:
+    working_directory: /go/src/github.com/vimond/oauth2_proxy
+    docker:
+      - image: circleci/golang:1.10
+        environment:
+          IMAGE_NAME: oauth2_proxy
+    steps:
+      - setup_remote_docker
+      - checkout
+
+      - run:
+          name: Login to docker repository
+          command: docker login -u $ARTIFACTORY_USER -p $ARTIFACTORY_PASSWORD $DOCKER_PRIVATE_REPO
+      
+      - run:
+          name: Build
+          command: ./dist.sh
+
+      - deploy:
+          name: Upload docker image
+          command: docker push $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$(git describe --tags --always)
+
+workflows:
+  version: 2
+  on_commit:
+    jobs:
+      - upload_and_deploy:
+          filters:
+            tags:
+              only: /.*/
