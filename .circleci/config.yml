@@ -17,6 +17,10 @@ jobs:
       - run:
           name: Build
           command: ./dist.sh
+      
+      - run:
+          name: Build Docker image
+          command: docker build -t $DOCKER_PRIVATE_REPO/$IMAGE_NAME:$(git describe --tags --always) .
 
       - deploy:
           name: Upload docker image
