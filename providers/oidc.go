@@ -33,7 +33,7 @@ func (p *OIDCProvider) Redeem(redirectURL, code string) (s *SessionState, err er
 		RedirectURL: redirectURL,
 	}
 	log.Printf("oidc config: %+v", c)
-	oauth2.RegisterBrokenAuthHeaderProvider(redirectURL)
+	oauth2.RegisterBrokenAuthHeaderProvider(p.RedeemURL.String())
 	token, err := c.Exchange(ctx, code)
 	if err != nil {
 		return nil, fmt.Errorf("token exchange: %v", err)
