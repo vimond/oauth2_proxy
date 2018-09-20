@@ -3,7 +3,6 @@ package providers
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -32,8 +31,6 @@ func (p *OIDCProvider) Redeem(redirectURL, code string) (s *SessionState, err er
 		},
 		RedirectURL: redirectURL,
 	}
-	log.Printf("exchange config %+v\n", c)
-	log.Printf("exchange code %s", code)
 	oauth2.RegisterBrokenAuthHeaderProvider(redirectURL)
 	token, err := c.Exchange(ctx, code)
 	if err != nil {
